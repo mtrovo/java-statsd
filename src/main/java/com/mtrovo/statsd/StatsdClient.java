@@ -29,7 +29,7 @@ public class StatsdClient {
             throw new StatsdException("Unable to startup statsd client", e);
         }
         
-        Endpoint endpoint = new Endpoint(socket);
+        Endpoint endpoint = new UdpEndpoint(socket);
         endpoint.setErrorHandler(new SyserrErrorHandler());
         return endpoint;
     }
@@ -45,33 +45,6 @@ class SyserrErrorHandler implements StatdErrorHandler {
     
 }
 
-class Endpoint {
-    private final DatagramSocket serverSocket;    
-    private StatdErrorHandler errorHandler; 
-
-    
-    public Endpoint(DatagramSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
-
-    public void send(String msg) throws StatsdException{
-        try {
-            byte[] bytes = msg.getBytes();
-            this.serverSocket.send(new DatagramPacket(bytes, bytes.length));
-        } catch (Exception e) {
-            errorHandler.handle(msg, e);
-        }
-    }
-
-    public StatdErrorHandler getErrorHandler() {
-        return errorHandler;
-    }
-
-    public void setErrorHandler(StatdErrorHandler errorHandler) {
-        this.errorHandler = errorHandler;
-    }
-}
-
 class Counter {
 
     private final Endpoint endpoint;
@@ -85,14 +58,16 @@ class Counter {
     }
     
     public void increment(String bucket, long diff) { 
+        if(diff < 0) throw new IllegalArgumentException("Only positive integer values allowed");
         send(bucket, diff);
     }
     
     public void decrement(String bucket) {
-        increment(bucket, -1);
+        send(bucket, -1);
     }
 
     public void decrement(String bucket, long diff) { 
+        if(diff < 0) throw new IllegalArgumentException("Only positive integer values allowed");
         send(bucket, -diff);
     }
     
