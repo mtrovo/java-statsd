@@ -121,10 +121,12 @@ class Gauge {
     }
     
     public void increment(String bucket, long delta) { 
+        if(delta < 0) throw new IllegalArgumentException("Only positive integer values allowed");
         sendDelta(bucket, delta);
     }
     
     public void decrement(String bucket, long delta) {
+        if(delta < 0) throw new IllegalArgumentException("Only positive integer values allowed");
         sendDelta(bucket, -delta);
     }
     
