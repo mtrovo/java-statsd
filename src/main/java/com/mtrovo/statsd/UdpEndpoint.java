@@ -7,8 +7,7 @@ import java.net.SocketException;
 
 public class UdpEndpoint implements Endpoint {
     private final DatagramSocket serverSocket;    
-    private StatdErrorHandler errorHandler; 
-
+    private StatdErrorHandler errorHandler;
 
     private static DatagramSocket createSocket(String group, int port) {
         DatagramSocket socket;
@@ -27,6 +26,7 @@ public class UdpEndpoint implements Endpoint {
     
     public UdpEndpoint(DatagramSocket serverSocket) {
         this.serverSocket = serverSocket;
+        this.errorHandler = new SyserrErrorHandler();
     }
 
     /* (non-Javadoc)
