@@ -1,7 +1,8 @@
 package com.mtrovo.statsd;
 
 /**
- * Created by mtrovo on 28/05/14.
+ *
+ * @author mtrovo on 28/05/14.
  */
 class Counter {
 
