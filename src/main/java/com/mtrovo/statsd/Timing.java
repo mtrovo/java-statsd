@@ -14,6 +14,12 @@ class Timing {
     public Context time(String bucket) {
         return new Context(bucket, ticker.current());
     }
+    
+    public void time(String bucket, Runnable runnable){
+        long ini = ticker.current();
+        runnable.run();
+        this.sendTimeMs(bucket, ticker.current() - ini);
+    }
 
     public void sendTimeMs(String bucket, long ms) {
         endpoint.send(String.format("%s:%d|ms", bucket, ms));
@@ -37,6 +43,10 @@ class Timing {
 
         public Context time() {
             return Timing.this.time(bucket);
+        }
+        
+        public void time(Runnable runnable) {
+        	Timing.this.time(bucket, runnable);
         }
 
         public void sendTimeMs(long ms) {

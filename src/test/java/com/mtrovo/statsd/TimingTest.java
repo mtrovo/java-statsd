@@ -65,4 +65,25 @@ public class TimingTest {
         }
         verify(endpoint).send("@bucket-d:1618|ms");
     }
+    
+    @Test
+    public void testTimeClosure() {
+        Ticker ticker = mock(Ticker.class);
+        when(ticker.current()).thenReturn(100L, 142L);
+        
+        // change the ticker so we can instrument
+        this.timing.setTicker(ticker);
+        this.timing.time("@bucket-b", new Runnable() {
+
+			@Override
+			public void run() {
+				 
+	            int a = 10 + 20;
+	            int b = 20 + 30;
+	            
+	            compute = a * b;				
+			}
+        });
+        verify(endpoint).send("@bucket-b:42|ms");
+    }
 }

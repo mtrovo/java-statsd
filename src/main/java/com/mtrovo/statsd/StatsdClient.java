@@ -12,6 +12,7 @@ public class StatsdClient {
     public final Counter counter;
     public final Gauge gauge;
     public final UniqueEvent event;
+    public final Timing timing;
     
     public StatsdClient(String group, int port) {
         this(new UdpEndpoint(group, port));
@@ -22,6 +23,7 @@ public class StatsdClient {
         this.counter = new Counter(endpoint);
         this.gauge = new Gauge(endpoint);
         this.event = new UniqueEvent(endpoint);
+        this.timing = new Timing(endpoint);
     }
 }
 
