@@ -2,8 +2,10 @@ package com.mtrovo.statsd;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class UdpEndpoint implements Endpoint {
     private final DatagramSocket serverSocket;    
@@ -13,11 +15,11 @@ public class UdpEndpoint implements Endpoint {
         DatagramSocket socket;
         try {
             socket = new DatagramSocket();
-            socket.bind(new InetSocketAddress(group, port));
+            socket.connect(new InetSocketAddress(InetAddress.getByName(group), port));
             return socket;
-        } catch (SocketException e) {
+        } catch (SocketException | UnknownHostException e) {
             throw new StatsdException("Unable to startup statsd client", e);
-        }
+        } 
     }
     
     public UdpEndpoint(String group, int port) {
